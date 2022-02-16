@@ -12,12 +12,9 @@ public class Main {
         int[] arr = new int[n];
 
         st = new StringTokenizer(br.readLine());
-        for(int i = 0; i < n; i++){
-            arr[i] = Integer.parseInt(st.nextToken());
-        }
+        for(int i = 0; i < n; i++) arr[i] = Integer.parseInt(st.nextToken());
 
         Arrays.sort(arr);
-
         int min = Integer.MAX_VALUE;
 
         for(int i = 0; i < n-3; i++){
@@ -26,11 +23,16 @@ public class Main {
                 int right = j-1;
 
                 while(left < right){
-                    int tmp = arr[left] + arr[right] - arr[i] - arr[j];
+                    int diff = arr[left] + arr[right] - arr[i] - arr[j];
 
-                    if(min > Math.abs(tmp)) min = Math.abs(tmp);
+                    if(diff == 0){
+                        System.out.println(diff);
+                        return;
+                    }
 
-                    if(tmp > 0) right -= 1;
+                    if(min > Math.abs(diff)) min = Math.abs(diff);
+
+                    if(diff > 0) right -= 1;
                     else left += 1;
                 }
 
