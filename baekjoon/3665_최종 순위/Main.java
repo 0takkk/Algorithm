@@ -4,8 +4,8 @@ import java.util.*;
 public class Main {
 
     public static int n;
-    public static int[] degree;
     public static boolean[][] edge;
+    public static int[] degree;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -16,8 +16,8 @@ public class Main {
         while(t-->0){
             n = Integer.parseInt(br.readLine());
 
-            degree = new int[n+1];
             edge = new boolean[n+1][n+1];
+            degree = new int[n+1];
 
             st = new StringTokenizer(br.readLine());
             for(int i = 0; i < n; i++){
@@ -25,7 +25,7 @@ public class Main {
                 degree[num] = i;
 
                 for(int j = 1; j <= n; j++){
-                    if(j != num && !edge[j][num]){
+                    if(num != j && !edge[j][num]){
                         edge[num][j] = true;
                     }
                 }
@@ -53,7 +53,7 @@ public class Main {
             }
         }
 
-        for(int i = 1; i <= n; i++){
+        for(int i = 1; i<= n; i++){
             if(q.size() == 0) return "IMPOSSIBLE";
             if(q.size() > 1) return "?";
 
@@ -62,13 +62,13 @@ public class Main {
 
             for(int j = 1; j <= n; j++){
                 if(edge[now][j]){
-                    edge[now][j] = false;
                     if(--degree[j] == 0){
                         q.offer(j);
                     }
                 }
             }
         }
+
         return sb.toString();
     }
 
