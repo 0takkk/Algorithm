@@ -6,7 +6,8 @@ public class Main {
     }
 
     public static class Cursor{
-        int x, y;
+        int x;
+        int y;
 
         public Cursor(int x, int y) {
             this.x = x;
