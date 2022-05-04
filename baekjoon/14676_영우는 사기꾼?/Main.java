@@ -3,7 +3,6 @@ import java.util.*;
 
 public class Main {
 
-    public static int n;
     public static ArrayList<Integer>[] list;
     public static int[] degree, buildingCnt;
 
@@ -12,16 +11,15 @@ public class Main {
         StringTokenizer st;
 
         st = new StringTokenizer(br.readLine());
-        n = Integer.parseInt(st.nextToken());
+        int n = Integer.parseInt(st.nextToken());
         int m = Integer.parseInt(st.nextToken());
         int k = Integer.parseInt(st.nextToken());
 
-        list = new ArrayList[n+1];
-        for(int i = 1; i<= n; i++)
-            list[i] = new ArrayList<>();
-
-        buildingCnt = new int[n+1];
         degree = new int[n+1];
+        buildingCnt = new int[n+1];
+        list = new ArrayList[n+1];
+        for(int i = 1; i <= n; i++)
+            list[i] = new ArrayList<>();
 
         while(m-->0){
             st = new StringTokenizer(br.readLine());
@@ -35,10 +33,10 @@ public class Main {
         boolean flag = true;
         while(k-->0){
             st = new StringTokenizer(br.readLine());
-            int command = Integer.parseInt(st.nextToken());
+            int comd = Integer.parseInt(st.nextToken());
             int a = Integer.parseInt(st.nextToken());
 
-            flag = check(command, a);
+            flag = check(comd, a);
 
             if(!flag) break;
         }
@@ -47,23 +45,23 @@ public class Main {
         else System.out.println("Lier!");
     }
 
-    public static boolean check(int command, int a){
-        if(command == 1){
-            if(degree[a] > 0) return false;
+    public static boolean check(int comd, int a){
+        if(comd == 1){
+            if(degree[a] == 0){
 
-            buildingCnt[a]++;
-            if(buildingCnt[a] == 1 && list[a].size() > 0){
-                for(int next : list[a]){
-                    degree[next]--;
+                if(++buildingCnt[a] == 1) {
+                    for (int next : list[a]) {
+                        degree[next]--;
+                    }
                 }
             }
-
+            else return false;
         }
-        else {
+        else{
             int cnt = --buildingCnt[a];
             if(cnt < 0) return false;
 
-            if(cnt == 0 && list[a].size() > 0){
+            if(cnt == 0){
                 for(int next : list[a]){
                     degree[next]++;
                 }
