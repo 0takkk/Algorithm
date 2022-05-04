@@ -3,7 +3,7 @@ import java.util.*;
 
 public class Main {
 
-    public static int n, x, y, result;
+    public static int n, result;
     public static int[] arr;
     public static boolean[] visited;
 
@@ -13,23 +13,22 @@ public class Main {
 
         st = new StringTokenizer(br.readLine());
         n = Integer.parseInt(st.nextToken());
-        x = Integer.parseInt(st.nextToken());
-        y = Integer.parseInt(st.nextToken());
+        int x = Integer.parseInt(st.nextToken());
+        int y = Integer.parseInt(st.nextToken());
 
-        arr = new int[2*n + 1];
-        visited = new boolean[2*n+1];
-        int target = y-x-1;
+        arr = new int[2*n+1];
+        visited = new boolean[n+1];
 
-        arr[x] = arr[y] = target;
-        visited[target] = true;
+        arr[x] = arr[y] = y-x-1;
+        visited[y-x-1] = true;
 
         backTracking(1);
 
         System.out.println(result);
     }
 
-    public static void backTracking(int idx) {
-        if (idx == 2*n) {
+    public static void backTracking(int idx){
+        if(idx == 2*n){
             result++;
             return;
         }
@@ -51,5 +50,4 @@ public class Main {
         }
         else backTracking(idx+1);
     }
-
 }
