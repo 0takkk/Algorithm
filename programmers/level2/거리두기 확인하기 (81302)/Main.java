@@ -1,85 +1,91 @@
-package com.company;
 import java.util.*;
 
-public class Main {
 
+public class Main {
     public static void main(String[] args) {
-        String[][] pbl = new String[][] {{"POOOP", "OXXOX", "OPXPX", "OOXOX", "POXXP"},
+//        System.out.println(solution("one4seveneight"));
+        int[] solution = solution(new String[][]{{"POOOP", "OXXOX", "OPXPX", "OOXOX", "POXXP"},
                 {"POOPX", "OXPXP", "PXXXO", "OXXXO", "OOOPP"},
                 {"PXOPX", "OXOXP", "OXPOX", "OXXOP", "PXPOX"},
                 {"OOOXX", "XOOOX", "OOOXX", "OXOOX", "OOOOO"},
-                {"PXPXP", "XPXPX", "PXPXP", "XPXPX", "PXPXP"}};
+                {"PXPXP", "XPXPX", "PXPXP", "XPXPX", "PXPXP"}});
 
-//        solution(pbl);
-        for(int i : solution(pbl))
-            System.out.println(i);
-
-
+        for (int i : solution) {
+            System.out.print(i+" ");
+        }
     }
+
+    public static int[] dx = {0, 0, 1, -1, -1, -1, 1, 1, -2, 0, 2, 0};
+    public static int[] dy = {1, -1, 0, 0, -1, 1, -1, 1, 0, 2, 0, -2};
 
     public static int[] solution(String[][] places) {
-        int[] answer = new int[places.length];
-        int idx = 0;
+        int size = places.length;
+        int[] ans = new int[size];
 
-        for(String[] place : places){
-            int checked = 1;
-            for(int i = 0; i < place.length; i++){
-                for(int j = 0; j < place[0].length(); j++){
-                    char c = place[i].charAt(j);
+        for(int i = 0; i < size; i++){
+            String[] place = places[i];
 
-                    if(c == 'P') {
-                        checked = check(place, i, j);
-                        if (checked == 0) break;
+            boolean flag = true;
+            for(int j = 0; j < 5; j++){
+                for(int k = 0; k < 5; k++){
+                    if(place[j].charAt(k) == 'P'){
+                        flag = check(place, j, k);
+                        if(!flag) break;
                     }
                 }
-                if(checked == 0) {
-                    answer[idx] = 0;
-                    break;
-                }
+                if(!flag) break;
             }
-            if(checked == 1) answer[idx] = 1;
-            idx++;
+
+            if(flag) ans[i] = 1;
+            else ans[i] = 0;
         }
 
-        return answer;
+        return ans;
     }
 
-    public static int check(String[] place, int i, int j){
-        int[] mx1 = {0,1,0,-1};
-        int[] my1 = {-1,0,1,0};
-        for(int m = 0; m < 4; m++){
-            int mi = i + mx1[m];
-            int mj = j + my1[m];
+    public static boolean check(String[] place, int x, int y){
+        int nx;
+        int ny;
 
-            if(mi < 0 || mi >= place.length || mj < 0 || mj >= place.length) continue;
-            if(place[mi].charAt(mj) == 'P') return 0;
+        for(int i = 0; i < 4; i++){
+            nx = x + dx[i];
+            ny = y + dy[i];
+
+            if(!isRange(nx, ny)) continue;
+
+            if(place[nx].charAt(ny) == 'P') return false;
         }
 
-        int[] mx2 = {-1, 1, -1, 1};
-        int[] my2 = {-1, -1, 1, 1};
-        for(int m = 0; m < 4; m++){
-            int mi = i + mx2[m];
-            int mj = j + my2[m];
+        for(int i = 4; i < 8; i++){
+            nx = x + dx[i];
+            ny = y + dy[i];
 
-            if(mi < 0 || mi >= place.length || mj < 0 || mj >= place.length) continue;
-            if(place[mi].charAt(mj) == 'P'){
-                if(place[i].charAt(mj) == 'O' || place[mi].charAt(j) == 'O') return 0;
+            if(!isRange(nx, ny)) continue;
+
+            if(place[nx].charAt(ny) == 'P'){
+                if(place[x].charAt(ny) == 'O' || place[nx].charAt(y) == 'O')
+                    return false;
             }
         }
 
-        int[] mx3 = {0, 2, 0, -2};
-        int[] my3 = {-2, 0, 2, 0};
-        for(int m = 0; m < 4; m++){
-            int mi = i + mx3[m];
-            int mj = j + my3[m];
+        for(int i = 8; i < 12; i++){
+            nx = x + dx[i];
+            ny = y + dy[i];
 
-            if(mi < 0 || mi >= place.length || mj < 0 || mj >= place.length) continue;
-            if(place[mi].charAt(mj) == 'P'){
-                if(place[i + mx3[m]/2].charAt(j + my3[m]/2) == 'O') return 0;
+            if(!isRange(nx, ny)) continue;
+
+            if(place[nx].charAt(ny) == 'P'){
+//                if(place[(x + nx)/2].charAt((y + ny)/2) == 'O')
+                if(place[x + dx[i]/2].charAt(y + dy[i]/2) == 'O')
+                    return false;
             }
         }
 
-        return 1;
+        return true;
+    }
+
+    public static boolean isRange(int x, int y){
+        return x >= 0 && x < 5 && y >= 0 && y < 5;
     }
 
 }
