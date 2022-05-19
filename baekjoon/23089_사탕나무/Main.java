@@ -36,14 +36,12 @@ public class Main {
         dfs(1);
 
         int max = 0;
-        int id = 0;
         for(int i = 1; i <= n; i++){
             int count = dp[i][k] + 1;
             count += restCount(i);
 
             if(max < count){
                 max = count;
-                id = i;
             }
         }
 
