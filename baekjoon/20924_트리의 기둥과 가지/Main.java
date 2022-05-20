@@ -47,22 +47,13 @@ public class Main {
 
         dfs(root, 0);
 
-
         int max = 0;
         for(int i = 1; i<= n; i++){
             max = Math.max(max, dists[i]);
         }
-        if(giga != 0){
-            System.out.println(dists[giga] + " " + (max-dists[giga]));
-        }
-        else{
-            if(giga == root){
-                System.out.println(0 + " " + max);
-            }
-            else{
-                System.out.println(max + " " + 0);
-            }
-        }
+
+        if(giga != 0) System.out.println(dists[giga] + " " + (max-dists[giga]));
+        else System.out.println(max + " " + 0);
     }
 
     public static int dfs(int now, int dist){
@@ -72,7 +63,6 @@ public class Main {
                 visited[next.x] = true;
                 child[now]++;
                 dists[next.x] = dfs(next.x, dist + next.cost);
-                visited[next.x] = false;
             }
         }
 
