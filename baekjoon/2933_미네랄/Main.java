@@ -1,28 +1,22 @@
-package com.company;
 import java.io.*;
 import java.util.*;
 
 public class Main {
 
-    public static int r, c;
-    public static char[][] map;
-    public static boolean[][] visited;
-
-    public static int[] dx = {1, 0, 0, -1};
-    public static int[] dy = {0, -1, 1, 0};
-
-    public static class Pos implements Comparable<Pos>{
-        int x, y;
+    public static class Pos{
+        int x ,y;
 
         public Pos(int x, int y) {
             this.x = x;
             this.y = y;
         }
-
-        public int compareTo(Pos p){
-            return p.x - x;
-        }
     }
+
+    public static int r, c;
+    public static char[][] map;
+
+    public static int[] dx = {0, 0, 1, -1};
+    public static int[] dy = {1, -1, 0, 0};
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -33,25 +27,25 @@ public class Main {
         c = Integer.parseInt(st.nextToken());
 
         map = new char[r][c];
-
         for(int i = 0; i < r; i++){
-            map[i] = br.readLine().toCharArray();
+            String str = br.readLine();
+            for(int j = 0; j < c; j++){
+                map[i][j] = str.charAt(j);
+            }
         }
 
         int n = Integer.parseInt(br.readLine());
         st = new StringTokenizer(br.readLine());
-        int dir = 0;
+        int cnt = 0;
+        while(cnt++ < n){
+            int high = Integer.parseInt(st.nextToken());
 
-        while(n-->0){
-            int h = r - Integer.parseInt(st.nextToken());
+            int dir;
+            if(cnt % 2 == 1) dir = 0;  // 왼쪽
+            else dir = 1;  // 오른쪽
 
-            if(dir % 2 == 0) dir = 0;
-            else dir = 1;
-
-            shoot(h, dir);
+            shoot(high, dir);
             find();
-
-            dir++;
         }
 
         for(int i = 0; i < r; i++){
@@ -63,19 +57,19 @@ public class Main {
 
     }
 
-    public static void shoot(int h, int dir){
+    public static void shoot(int high, int dir){
         if(dir == 0){
             for(int i = 0; i < c; i++){
-                if(map[h][i] == 'x'){
-                    map[h][i] = '.';
+                if(map[r-high][i] == 'x'){
+                    map[r-high][i] = '.';
                     break;
                 }
             }
         }
         else{
             for(int i = c-1; i >= 0; i--){
-                if(map[h][i] == 'x'){
-                    map[h][i] = '.';
+                if(map[r-high][i] == 'x'){
+                    map[r-high][i] = '.';
                     break;
                 }
             }
@@ -83,15 +77,14 @@ public class Main {
     }
 
     public static void find(){
-        visited = new boolean[r][c];
+        boolean[][] visited = new boolean[r][c];
         Queue<Pos> q = new LinkedList<>();
 
-        // 땅에 붙어있는 클러스터 체크
         for(int i = 0; i < c; i++){
             if(map[r-1][i] == '.' || visited[r-1][i]) continue;
 
             visited[r-1][i] = true;
-            q.add(new Pos(r-1, i));
+            q.offer(new Pos(r-1, i));
 
             while(!q.isEmpty()){
                 Pos p = q.poll();
@@ -112,44 +105,44 @@ public class Main {
             }
         }
 
-        // 공중에 떠 있는 클러스터 찾기
-        ArrayList<Pos> arr = new ArrayList<>();
+        ArrayList<Pos> list = new ArrayList<>();
         for(int i = 0; i < r; i++){
             for(int j = 0; j < c; j++){
                 if(!visited[i][j] && map[i][j] == 'x'){
+                    list.add(new Pos(i, j));
                     map[i][j] = '.';
-                    arr.add(new Pos(i, j));
                 }
             }
         }
 
-        if(arr.isEmpty()) return;
+        if(list.isEmpty()) return;
 
-        move(arr);
+        down(list);
     }
 
-    public static void move(ArrayList<Pos> arr){
+
+    public static void down(ArrayList<Pos> list){
         boolean flag = true;
 
         while(flag){
-            for (Pos p : arr) {
+            for(Pos p : list){
                 int x = p.x + 1;
                 int y = p.y;
 
-                if((x < 0 || x >= r || y < 0 || y >= c) || map[x][y] == 'x'){
+                if(x < 0 || x >= r || y < 0 || y >= c || map[x][y] == 'x'){
                     flag = false;
                     break;
                 }
             }
 
             if(flag){
-                for (Pos p : arr) {
+                for(Pos p : list){
                     p.x++;
                 }
             }
         }
 
-        for (Pos p : arr) {
+        for(Pos p : list){
             map[p.x][p.y] = 'x';
         }
     }
