@@ -4,8 +4,7 @@ import java.util.*;
 public class Main {
 
     public static class Pos{
-        int x, y;
-        int dir, mirror;
+        int x, y, dir, mirror;
 
         public Pos(int x, int y, int dir) {
             this.x = x;
@@ -23,7 +22,7 @@ public class Main {
 
     public static int n, m;
     public static char[][] map;
-    public static int[][] mirrors;
+    public static int[][] arr;
     public static Pos c1, c2;
 
     public static int[] dx = {0, 0, 1, -1};
@@ -38,7 +37,6 @@ public class Main {
         n = Integer.parseInt(st.nextToken());
 
         map = new char[n][m];
-
         for(int i = 0; i < n; i++){
             String str = br.readLine();
             for(int j = 0; j < m; j++){
@@ -51,39 +49,42 @@ public class Main {
             }
         }
 
-        mirrors = new int[n][m];
+        arr = new int[n][m];
         for(int i = 0; i < n; i++){
-            Arrays.fill(mirrors[i], Integer.MAX_VALUE);
+            Arrays.fill(arr[i], Integer.MAX_VALUE);
         }
-        mirrors[c1.x][c1.y] = 0;
 
         bfs();
-        System.out.println(mirrors[c2.x][c2.y] - 1);
+        System.out.println(arr[c2.x][c2.y]);
     }
 
     public static void bfs(){
         Queue<Pos> q = new LinkedList<>();
         q.offer(c1);
+        arr[c1.x][c1.y] = 0;
 
         while(!q.isEmpty()){
-            Pos now = q.poll();
-            int x = now.x;
-            int y = now.y;
-            int dir = now.dir;
-            int mirror = now.mirror;
+            Pos p = q.poll();
+            int x = p.x;
+            int y = p.y;
+            int dir = p.dir;
+            int mirror = p.mirror;
 
             if(x == c2.x && y == c2.y) continue;
-
+            
             for(int i = 0; i < 4; i++){
                 int nx = x + dx[i];
                 int ny = y + dy[i];
 
                 if(nx < 0 || nx >= n || ny < 0 || ny >= m || map[nx][ny] == '*') continue;
 
-                int nMirror = mirror + (i == dir ? 0 : 1);
-                if(mirrors[nx][ny] >= nMirror){
-                    mirrors[nx][ny] = nMirror;
-                    q.offer(new Pos(nx, ny, i, nMirror));
+                int newMirror;
+                if(dir == -1 || dir == i) newMirror = mirror;
+                else newMirror = mirror+1;
+
+                if(arr[nx][ny] >= newMirror){
+                    arr[nx][ny] = newMirror;
+                    q.offer(new Pos(nx, ny, i, newMirror));
                 }
             }
         }
