@@ -15,19 +15,18 @@ public class Main {
 
         Deque<Character> dq = new ArrayDeque<>();
 
-        for(int i = 0; i < n; i++){
-            char num = arr[i];
-
-            while(k > 0 && !dq.isEmpty() && dq.peekLast() < num){
+        for (char c : arr) {
+            while(k > 0 && !dq.isEmpty() && dq.peekLast() < c){
                 dq.pollLast();
                 k--;
             }
 
-            dq.offerLast(num);
+            dq.offerLast(c);
         }
 
+        int size = dq.size()-k;
         StringBuilder sb = new StringBuilder();
-        while(dq.size() > k){
+        for(int i = 0; i < size; i++){
             sb.append(dq.pollFirst());
         }
 
