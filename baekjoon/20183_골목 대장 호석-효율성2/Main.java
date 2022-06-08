@@ -18,24 +18,16 @@ public class Main {
             this.shy = shy;
         }
 
-        @Override
-        public int compareTo(Node o) {
-            if(this.shy == o.shy) {
-                if(this.cost > o.cost) return 1;
-                else if(this.cost == o.cost) return 0;
-                else return -1;
-            }
-            else{
-                if(this.shy > o.shy) return 1;
-                else return -1;
-            }
+        public int compareTo(Node n){
+            if(this.shy - n.shy > 0) return 1;
+            else if(this.shy - n.shy < 0) return -1;
+            return 0;
         }
     }
 
-    public static int n;
-    public static long c, MAX = 50000000000000001L;
+    public static int n, m, a, b;
+    public static long c;
     public static ArrayList<Node>[] list;
-    public static long[] shame;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -43,53 +35,55 @@ public class Main {
 
         st = new StringTokenizer(br.readLine());
         n = Integer.parseInt(st.nextToken());
-        int m = Integer.parseInt(st.nextToken());
-        int a = Integer.parseInt(st.nextToken());
-        int b = Integer.parseInt(st.nextToken());
+        m = Integer.parseInt(st.nextToken());
+        a = Integer.parseInt(st.nextToken());
+        b = Integer.parseInt(st.nextToken());
         c = Long.parseLong(st.nextToken());
 
         list = new ArrayList[n+1];
         for(int i = 1; i <= n; i++)
             list[i] = new ArrayList<>();
 
-        while(m-->0){
+        for(int i = 0; i < m; i++){
             st = new StringTokenizer(br.readLine());
-            int s = Integer.parseInt(st.nextToken());
-            int e = Integer.parseInt(st.nextToken());
-            long cost = Long.parseLong(st.nextToken());
+            int from = Integer.parseInt(st.nextToken());
+            int to = Integer.parseInt(st.nextToken());
+            int cost = Integer.parseInt(st.nextToken());
 
-            list[s].add(new Node(e, cost));
-            list[e].add(new Node(s, cost));
+            list[from].add(new Node(to, cost));
+            list[to].add(new Node(from, cost));
         }
 
-        shame = new long[n+1];
-        Arrays.fill(shame, MAX);
-
-        System.out.println(dijkstra(a, b));
+        System.out.println(dijkstra());
     }
 
-    public static long dijkstra(int start, int end){
+    public static long dijkstra(){
+        long[] arr = new long[n+1];
+        Arrays.fill(arr, Long.MAX_VALUE);
+        arr[a] = 0;
+
         PriorityQueue<Node> pq = new PriorityQueue<>();
-        pq.offer(new Node(start, 0, 0));
+        pq.offer(new Node(a, 0, 0));
 
         while(!pq.isEmpty()){
             Node now = pq.poll();
+            int x = now.x;
+            long cost = now.cost;
+            long shy = now.shy;
 
-            if(shame[now.x] <= now.shy) continue;
-            if(now.x == end) return now.shy;
+            if(x == b) return shy;
+            if(arr[x] < shy) continue;
 
-            shame[now.x] = now.shy;
+            for(Node next : list[x]){
+                long newCost = cost + next.cost;
+                long newShy = Math.max(shy, next.cost);
 
-            for(Node next : list[now.x]){
-                long newDist = now.cost + next.cost;
-                long maxShame = Math.max(now.shy, next.cost);
-
-                if(newDist > c || shame[next.x] <= maxShame) continue;
-
-                pq.offer(new Node(next.x, newDist, maxShame));
+                if(newCost <= c && arr[next.x] > newShy){
+                    arr[next.x] = newShy;
+                    pq.offer(new Node(next.x, newCost, newShy));
+                }
             }
         }
-
         return -1;
     }
 
