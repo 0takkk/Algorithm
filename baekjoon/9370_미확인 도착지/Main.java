@@ -1,39 +1,38 @@
-package com.company;
 import java.io.*;
 import java.util.*;
 
 public class Main {
 
-    public static int n, dist[];
-    public static ArrayList<Node>[] graph;
-    public static ArrayList<Integer> possibleDest;
-
     public static class Node implements Comparable<Node>{
-        int x, weight;
+        int x, cost;
 
         public Node(int x, int cost) {
             this.x = x;
-            this.weight = cost;
+            this.cost = cost;
         }
 
-        public int compareTo(Node o){
-            return this.weight - o.weight;
+        @Override
+        public int compareTo(Node o) {
+            return this.cost - o.cost;
         }
     }
+
+    public static int n, t;
+    public static int[] dest, dist;
+
+    public static ArrayList<Node>[] graph;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st;
 
-        int T = Integer.parseInt(br.readLine());
-        StringBuilder sb = new StringBuilder();
-        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+        int tc = Integer.parseInt(br.readLine());
 
-        while(T-- > 0){
+        while(tc-->0){
             st = new StringTokenizer(br.readLine());
             n = Integer.parseInt(st.nextToken());
             int m = Integer.parseInt(st.nextToken());
-            int t = Integer.parseInt(st.nextToken());
+            t = Integer.parseInt(st.nextToken());
 
             st = new StringTokenizer(br.readLine());
             int s = Integer.parseInt(st.nextToken());
@@ -41,68 +40,67 @@ public class Main {
             int h = Integer.parseInt(st.nextToken());
 
             graph = new ArrayList[n+1];
-            for(int i = 1; i <= n; i++)
+            for(int i = 1; i <= n; i++){
                 graph[i] = new ArrayList<>();
+            }
 
-            for(int i = 0; i < m; i++){
+            while(m-->0){
                 st = new StringTokenizer(br.readLine());
                 int a = Integer.parseInt(st.nextToken());
                 int b = Integer.parseInt(st.nextToken());
-                int cost = Integer.parseInt(st.nextToken());
+                int d = Integer.parseInt(st.nextToken());
+                int tmp = 2*d;
 
                 if((a == g && b == h) || (a == h && b == g)){
-                    graph[a].add(new Node(b, cost * 2 - 1));
-                    graph[b].add(new Node(a, cost * 2 - 1));
+                    graph[a].add(new Node(b, tmp-1));
+                    graph[b].add(new Node(a, tmp-1));
                 }
                 else{
-                    graph[a].add(new Node(b, cost * 2));
-                    graph[b].add(new Node(a, cost * 2));
+                    graph[a].add(new Node(b, tmp));
+                    graph[b].add(new Node(a, tmp));
                 }
             }
 
-            possibleDest = new ArrayList<>();
+            dest = new int[t];
             for(int i = 0; i < t; i++){
-                possibleDest.add(Integer.parseInt(br.readLine()));
+                dest[i] = Integer.parseInt(br.readLine());
             }
 
+            Arrays.sort(dest);
+
             dist = new int[n+1];
-            Arrays.fill(dist, 100000000);
+            Arrays.fill(dist, 50000000);
 
             dijkstra(s);
 
-            Collections.sort(possibleDest);
-
-            for(int num : possibleDest){
-                if(dist[num] % 2 == 1) bw.write(num + " ");
+            StringBuilder sb = new StringBuilder();
+            for(int i = 0; i < t; i++){
+                if(dist[dest[i]] % 2 == 1) sb.append(dest[i] + " ");
             }
-            bw.write("\n");
-        }
 
-        br.close();
-        bw.close();
+            System.out.println(sb.toString());
+        }
     }
 
     public static void dijkstra(int start){
-        boolean[] visited = new boolean[n+1];
         PriorityQueue<Node> pq = new PriorityQueue<>();
-
-        dist[start] = 0;
         pq.offer(new Node(start, 0));
+        dist[start] = 0;
 
         while(!pq.isEmpty()){
             Node now = pq.poll();
+            int x = now.x;
+            int cost = now.cost;
 
-            if(visited[now.x]) continue;
-            visited[now.x] = true;
+            if(dist[x] < cost) continue;
 
-            for(Node next : graph[now.x]){
-                if(!visited[next.x] && dist[next.x] > dist[now.x] + next.weight){
-                    dist[next.x] = dist[now.x] + next.weight;
+            for (Node next : graph[x]) {
+                if(dist[next.x] > dist[x] + next.cost){
+                    dist[next.x] = dist[x] + next.cost;
                     pq.offer(new Node(next.x, dist[next.x]));
                 }
             }
         }
-
     }
 
 }
