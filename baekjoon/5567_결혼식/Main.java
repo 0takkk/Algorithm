@@ -26,11 +26,11 @@ public class Main {
             graph[b].add(a);
         }
 
-        System.out.println(dfs(1));
+        System.out.println(bfs(1));
 
     }
 
-    public static int dfs(int start){
+    public static int bfs(int start){
         boolean[] visited = new boolean[n+1];
         Queue<Integer> q = new LinkedList<>();
         q.offer(start);
