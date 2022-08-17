@@ -18,9 +18,8 @@ public class Main {
 
     public static ArrayList<CCTV> list;  // cctv 저장
 
-    public static HashMap<Integer, Integer> dirCount;  // cctv 번호에 대한 볼 수 있는 방향 수
-    public static int[] dx = {-1, 0 ,1, 0};
-    public static int[] dy = {0, 1, 0, -1};  // 상, 우, 하, 좌
+    public static int[] dx = {0, -1 ,0, 1};
+    public static int[] dy = {-1, 0, 1, 0};  // 좌, 상, 우, 하
 
     public static void main(String[] args) throws Exception{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -45,13 +44,6 @@ public class Main {
             }
         }
 
-        dirCount = new HashMap<>();
-        dirCount.put(1, 4);
-        dirCount.put(2, 2);
-        dirCount.put(3, 4);
-        dirCount.put(4, 4);
-        dirCount.put(5, 1);  // cctv 번호마다 볼 수 있는 방향 수 저장
-
         rec(0);  // 재귀를 돌면서 cctv가 볼 수 있는 방향 설정
         System.out.println(ans);
     }
@@ -73,7 +65,9 @@ public class Main {
         int y = p.y;
         int num = p.num;
 
-        int count = dirCount.get(num);  
+        int count = 4;
+        if(num == 2) count = 2;
+        else if(num == 5) count = 1;
 
         for(int j = 0; j < count; j++){   // cctv 번호에 해당하는 볼 수 있는 방향만큼 for문을 돌면서 재귀
             setCCTV(x, y, num, j, 1);  // 1로 설정하고
@@ -88,54 +82,17 @@ public class Main {
             cctvArea(x, y, dir, state);
         }
         else if(num == 2){
-            if(dir == 0){
-                cctvArea(x, y, 0, state);
-                cctvArea(x, y, 2, state);
-            }
-            else if(dir == 1){
-                cctvArea(x, y, 1, state);
-                cctvArea(x, y, 3, state);
-            }
+            cctvArea(x, y, dir, state);
+            cctvArea(x, y, dir+2, state);
         }
         else if(num == 3){
-            if(dir == 0){
-                cctvArea(x, y, 0, state);
-                cctvArea(x, y, 1, state);
-            }
-            else if(dir == 1){
-                cctvArea(x, y, 1, state);
-                cctvArea(x, y, 2, state);
-            }
-            else if(dir == 2){
-                cctvArea(x, y, 2, state);
-                cctvArea(x, y, 3, state);
-            }
-            else if(dir == 3){
-                cctvArea(x, y, 3, state);
-                cctvArea(x, y, 0, state);
-            }
+            cctvArea(x, y, dir, state);
+            cctvArea(x, y, dir+1, state);
         }
         else if(num == 4){
-            if(dir == 0){
-                cctvArea(x, y, 0, state);
-                cctvArea(x, y, 1, state);
-                cctvArea(x, y, 3, state);
-            }
-            else if(dir == 1){
-                cctvArea(x, y, 0, state);
-                cctvArea(x, y, 1, state);
-                cctvArea(x, y, 2, state);
-            }
-            else if(dir == 2){
-                cctvArea(x, y, 1, state);
-                cctvArea(x, y, 2, state);
-                cctvArea(x, y, 3, state);
-            }
-            else if(dir == 3){
-                cctvArea(x, y, 0, state);
-                cctvArea(x, y, 3, state);
-                cctvArea(x, y, 2, state);
-            }
+            cctvArea(x, y, dir, state);
+            cctvArea(x, y, dir+1, state);
+            cctvArea(x, y, dir+2, state);
         }
         else if(num == 5){
             cctvArea(x, y, 0, state);
@@ -146,6 +103,8 @@ public class Main {
     }
 
     private static void cctvArea(int x, int y, int dir, int state) {
+        dir %= 4;
+
         int nx = x + dx[dir];
         int ny = y + dy[dir];
         while(isRange(nx, ny) && map[nx][ny] != 6){
