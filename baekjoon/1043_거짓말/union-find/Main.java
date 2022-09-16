@@ -32,31 +32,26 @@ public class Main {
             st = new StringTokenizer(br.readLine());
             int count = Integer.parseInt(st.nextToken());
 
-            boolean isKnowTruth = false;
             for(int j = 0; j < count; j++){
                 int person = Integer.parseInt(st.nextToken());
                 party[i].add(person);
-
-                if(parent[person] == 0) isKnowTruth = true;
             }
 
-            if(isKnowTruth) union(party[i]);
+            union(party[i]);
         }
-
-//        System.out.println(Arrays.toString(parent));
 
         int ans = 0;
-        for(int i = 0; i < m-1; i++){
-            for(int j = 0; j < m; j++) {
-                union(party[j]);
-            }
-        }
-
         for(int i = 0; i < m; i++){
-            if(union(party[i]) != 0) ans++;
-        }
+            boolean isKnow = false;
+            for (int person : party[i]) {
+                if(find(person) == 0){
+                    isKnow = true;
+                    break;
+                }
+            }
 
-//        System.out.println(Arrays.toString(parent));
+            if(!isKnow) ans++;
+        }
 
         System.out.println(ans);
     }
@@ -66,7 +61,7 @@ public class Main {
         return parent[x] = find(parent[x]);
     }
 
-    public static int union(ArrayList<Integer> list){
+    public static void union(ArrayList<Integer> list){
         int x = find(list.get(0));
 
         for(int i = 1; i < list.size(); i++){
@@ -75,7 +70,5 @@ public class Main {
             if(y < x) parent[x] = y;
             else parent[y] = x;
         }
-
-        return find(x);
     }
 }
