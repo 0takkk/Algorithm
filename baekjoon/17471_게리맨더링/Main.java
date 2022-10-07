@@ -33,16 +33,15 @@ public class Main {
         }
 
         visited = new boolean[n+1];
-        for(int i = 1; i <= n/2; i++){  // combination으로 1 ~ n/2개 뽑아봄, 그 이상은 중복됨.
-            combi(1, 0, i);
-        }
+        combi(1, 0);
 
         System.out.println(ans == Integer.MAX_VALUE ? -1 : ans);
     }
 
-    public static void combi(int idx, int cnt, int max){
-        if(cnt == max){  // max개를 뽑았으면 뽑힌 정점들이 2개의 부분으로 나누어졌는지 확인
-            if(isTwoPartition(max)){  // 2개의 부분으로 나누어졌다면 최솟값 갱신
+    public static void combi(int idx, int cnt){
+        if(cnt > n/2) return;  // combination으로 1 ~ n/2개 뽑아봄, 그 이상은 중복됨.
+        else if(cnt >= 1){  // 1 ~ n/2개를 뽑았으면 2개 부분으로 나누어지는지 확인
+            if(isTwoPartition(cnt)){  // 2개의 부분으로 나누어졌다면 최솟값 갱신
                 int sum = 0;
                 for(int i = 1; i <= n; i++){
                     if(visited[i]) sum += people[i];
@@ -50,13 +49,12 @@ public class Main {
 
                 ans = Math.min(ans, Math.abs(total-2*sum));
             }
-            return;
         }
 
         for(int i = idx; i <= n; i++){
             if(!visited[i]){
                 visited[i] = true;
-                combi(i+1, cnt+1, max);
+                combi(i+1, cnt+1);
                 visited[i] = false;
             }
         }
@@ -80,7 +78,7 @@ public class Main {
             int now = q.poll();
 
             for (int next : graph[now]) {
-                if(!vis[next] && visited[next]){   
+                if(!vis[next] && visited[next]){
                     vis[next] = true;
                     cnt++;
                     q.offer(next);
