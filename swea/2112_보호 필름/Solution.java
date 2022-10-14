@@ -1,5 +1,3 @@
-package samsung01;
-
 import java.io.*;
 import java.util.*;
 
@@ -11,18 +9,14 @@ public class Solution {
 		int change;
 		
 		public Node(int cnt, String map, int change) {
-			super();
 			this.cnt = cnt;
 			this.map = map;
 			this.change = change;
 		}
-		
-		
-		
 	}
 	
 	public static int n, m, k, ans;
-	public static int[][] map;
+	public static int[][] map, copy;
 	
 	public static void main(String[] args) throws Exception{
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -39,16 +33,15 @@ public class Solution {
 			k = Integer.parseInt(st.nextToken());
 			
 			map = new int[n][m];
+			copy = new int[n][m];
 			for(int i = 0; i < n; i++) {
 				st = new StringTokenizer(br.readLine());
 				for(int j = 0; j < m; j++) {
-					map[i][j] = Integer.parseInt(st.nextToken());
+					map[i][j] = copy[i][j] = Integer.parseInt(st.nextToken());
 				}
 			}
 			
-			
 			dfs(0, 0);
-			
 			
 			sb.append("#").append(tc).append(" ").append(ans).append("\n");
 		}
@@ -58,26 +51,32 @@ public class Solution {
 	
 	
 	public static void dfs(int idx, int cnt) {	
-		if(check()) {
-			ans = Math.min(ans, cnt);
+		if(cnt >= ans) return;
+		
+		if(idx == n) {
+			if(check()) ans = Math.min(ans, cnt);
 			return;
 		}
-		
-		if(cnt >= ans) return;
-		if(idx == n) return;
-		
-		int[] copy = map[idx].clone();
-		
+
 		dfs(idx+1, cnt);
 		
-		Arrays.fill(map[idx], 0);
+		injection(idx, 0);
 		dfs(idx+1, cnt+1);
 		
-		Arrays.fill(map[idx], 1);
+		injection(idx, 1);
 		dfs(idx+1, cnt+1);
 		
-		map[idx] = copy.clone();
+		for(int i = 0; i < m; i++) {
+			map[idx][i] = copy[idx][i];
+		}
 	}
+	
+	public static void injection(int row, int state) {
+		for(int i = 0; i < m; i++) {
+			map[row][i] = state;
+		}
+	}
+	
 	
 	public static boolean check() {
 		for(int j = 0; j < m; j++) {
