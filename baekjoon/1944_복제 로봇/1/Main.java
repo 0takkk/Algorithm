@@ -3,16 +3,6 @@ import java.util.*;
 
 public class Main {
 
-//    public static class Key{
-//        int idx, x, y;
-//
-//        public Key(int idx, int x, int y) {
-//            this.idx = idx;
-//            this.x = x;
-//            this.y = y;
-//        }
-//    }
-
     public static class Pos{
         int x, y, move;
 
