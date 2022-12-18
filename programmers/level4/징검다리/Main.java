@@ -8,16 +8,17 @@ public class Main {
 
 
     public static int solution(int distance, int[] rocks, int n) {
-        int answer = 0;
+        int size = rocks.length+2;
+        int[] arr = new int[size];
+        arr[size-1] = distance;
 
-        int[] arr = new int[rocks.length+2];
-        arr[arr.length-1] = distance;
-        for(int i = 1; i < arr.length-1; i++){
+        for(int i = 1; i < size-1; i++){
             arr[i] = rocks[i-1];
         }
 
         Arrays.sort(arr);
 
+        int ans = 0;
         int left = 1;
         int right = distance;
 
@@ -26,26 +27,19 @@ public class Main {
             int cnt = 0;
             int prev = 0;
 
-            for(int i = 1; i < arr.length; i++){
-                if(arr[i] - prev < mid){
-                    cnt++;
-                }
-                else{
-                    prev = arr[i];
-                }
+            for(int i = 1; i < size; i++){
+                if(arr[i] - prev < mid) cnt++;
+                else prev = arr[i];
             }
 
-            if(cnt > n){
-                right = mid-1;
-            }
+            if(cnt > n) right = mid-1;
             else{
-                answer = Math.max(answer, mid);
+                ans = Math.max(ans, mid);
                 left = mid+1;
             }
-
         }
 
-        return answer;
+        return ans;
     }
 
 }
