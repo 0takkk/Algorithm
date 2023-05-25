@@ -1,40 +1,31 @@
 import java.util.*;
 
 class Solution {
-     public static int[][] sisos = {{4, 3}, {3, 2}, {2, 1}};
+    public static int[][] sisos = {{4, 3}, {3, 2}, {2, 1}};
 
     public static long solution(int[] weights) {
         long answer = 0;
 
-        HashMap<Integer, Integer> map = new HashMap<>();
-        HashSet<Integer> set = new HashSet<>();
+        long[] arr = new long[1001];
 
         for (int weight : weights) {
-            map.put(weight, map.getOrDefault(weight, 0) + 1);
-            set.add(weight);
+            arr[weight]++;
         }
 
-        boolean[] visited = new boolean[1001];
+        for(int i = 100; i <= 1000; i++){
+            if(arr[i] == 0) continue;
 
-        for (int weight : weights) {
-            if(visited[weight]) continue;
-            visited[weight] = true;
-
-            if(map.get(weight) > 1){
-                int cnt = map.get(weight);
-                answer += (((long) cnt * (cnt-1)) / 2);
-            }
+            answer += (arr[i] * (arr[i]-1)) / 2;
 
             for (int[] siso : sisos) {
                 int a = siso[0];
                 int b = siso[1];
 
-                if(weight % b == 0){
-                    int num = weight / b * a;
+                if(a * i / b > 1000) break;
+                if(i % b == 0){
+                    int weight = i / b * a;
 
-                    if(set.contains(num)){
-                        answer += ((long) map.get(weight) * map.get(num));
-                    }
+                    answer += (arr[i] * arr[weight]);
                 }
             }
         }
