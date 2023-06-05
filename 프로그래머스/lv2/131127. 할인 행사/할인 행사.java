@@ -9,7 +9,7 @@ class Solution {
             wantedMap.put(want[i], number[i]);
         }
         
-        int len = discount.length - 9;
+        int len = discount.length - 9; 
         
         HashMap<String, Integer> canBuy = new HashMap<>();
         for(int i = 0; i <= 9; i++){
