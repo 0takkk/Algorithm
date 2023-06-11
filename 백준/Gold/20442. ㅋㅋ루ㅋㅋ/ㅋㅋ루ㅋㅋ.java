@@ -8,36 +8,34 @@ public class Main {
         StringTokenizer st;
 
         char[] ch = br.readLine().toCharArray();
+        int len = ch.length;
 
-        ArrayList<Integer> lK = new ArrayList<>();
-        ArrayList<Integer> rK = new ArrayList<>();
-
-        int kCnt = 0;
-        for(int i = 0; i < ch.length; i++){
-            if(ch[i] == 'K') kCnt++;
-            else lK.add(kCnt);
+        int[] kCnt = new int[len];
+        int cnt = 0;
+        for(int i = 0; i < len; i++){
+            if(ch[i] == 'K') cnt++;
+            kCnt[i] = cnt;
         }
 
-        kCnt = 0;
-        for(int i = ch.length-1; i >= 0; i--){
-            if(ch[i] == 'K') kCnt++;
-            else rK.add(kCnt);
-        }
-
-        rK.sort(Comparator.reverseOrder());
+        int ans = len - cnt;
 
         int left = 0;
-        int right = rK.size()-1;
-        int max = 0;
+        int right = len-1;
 
         while(left <= right){
-            max = Math.max(max, (right - left + 1) + (2 * Math.min(lK.get(left), rK.get(right))));
+            int lk = 0;
+            if(left != 0) lk = kCnt[left-1];
 
-            if(lK.get(left) < rK.get(right)) left++;
-            else right--;
+            int kNum = Math.min(lk, kCnt[len-1] - kCnt[right]);
+            int rNum = right - left + 1 - (kCnt[right] - lk);
+
+            if(rNum != 0) ans = Math.max(ans, kNum * 2 + rNum);
+
+            if(left > 0 && kCnt[left-1] >= kCnt[len-1] - kCnt[right]) right--;
+            else left++;
         }
 
-        System.out.println(max);
+        System.out.println(ans);
     }
 
 }
