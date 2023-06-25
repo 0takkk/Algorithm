@@ -7,16 +7,7 @@ public class Main {
     public static char[][][] board;
     public static int maxScore, count;
     public static String longString;
-    public static Map<Integer, Integer> scores = Map.of(
-            1, 0,
-            2, 0,
-            3, 1,
-            4, 1,
-            5, 2,
-            6, 3,
-            7, 5,
-            8, 11
-    );
+    public static int[] scores;
     public static char[] peeked;
     public static HashSet<String> visitedWord;
     public static boolean[][] visited;
@@ -29,6 +20,7 @@ public class Main {
         StringTokenizer st;
 
         word = new HashSet<>();
+        scores = new int[]{0, 0, 0, 1, 1, 2, 3, 5, 11};
         int n = Integer.parseInt(br.readLine());
 
         while(n-->0){
@@ -86,7 +78,7 @@ public class Main {
 
         if(!visitedWord.contains(string) && word.contains(string)){
             visitedWord.add(string);
-            maxScore += scores.get(string.length());
+            maxScore += scores[idx+1];
             compareLongString(string);
             count++;
         }
