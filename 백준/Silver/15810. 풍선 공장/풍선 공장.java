@@ -12,15 +12,15 @@ public class Main {
         int m = Integer.parseInt(st.nextToken());
 
         int[] times = new int[n];
-        long max = 0;
+        long min = Integer.MAX_VALUE;
         st = new StringTokenizer(br.readLine());
         for(int i = 0; i < n; i++){
             times[i] = Integer.parseInt(st.nextToken());
-            max = Math.max(max, times[i]);
+            min = Math.min(min, times[i]);
         }
 
         long left = 0;
-        long right = max * m;
+        long right = min * m;
 
         while(left <= right){
             long mid = (left + right) / 2;
