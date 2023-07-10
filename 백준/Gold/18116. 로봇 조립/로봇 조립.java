@@ -4,8 +4,7 @@ import java.util.*;
 public class Main {
 
     public static final int size = 1000001;
-    public static int[] parent;
-    public static HashSet<Integer>[] set;
+    public static int[] parent, count;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -15,11 +14,10 @@ public class Main {
         int n = Integer.parseInt(br.readLine());
 
         parent = new int[size];
-        set = new HashSet[size];
+        count = new int[size];
         for(int i = 1; i < size; i++){
             parent[i] = i;
-            set[i] = new HashSet<>();
-            set[i].add(i);
+            count[i] = 1;
         }
 
         while(n-->0){
@@ -33,7 +31,7 @@ public class Main {
             }
             else{
                 int c = Integer.parseInt(st.nextToken());
-                sb.append(set[find(c)].size()).append("\n");
+                sb.append(count[find(c)]).append("\n");
             }
         }
 
@@ -58,7 +56,7 @@ public class Main {
         }
 
         parent[y] = x;
-        set[x].addAll(set[y]);
+        count[x] += count[y];
     }
 
 }
