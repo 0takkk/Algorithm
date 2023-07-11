@@ -2,17 +2,14 @@ import java.util.*;
 
 class Solution {
     public String solution(int n) {
-        int[] arr = new int[]{1, 2, 4};
+        String answer = "";
+        String[] st = {"4", "1", "2"};
         
-        StringBuilder sb = new StringBuilder();
-        
-        n = n-1;
-        while(n >= 0){
-            sb.append(arr[n%3]);
-            n /= 3;
-            n -= 1;
+        while(n > 0){
+            answer = st[n%3]+answer;
+            n =  (n-1) / 3;
+            //System.out.println(answer);
         }
-        
-        return sb.reverse().toString();
+        return answer;
     }
 }
