@@ -18,10 +18,10 @@ public class Main {
         int[] dp = new int[n+1];
         for(int i = 2; i <= n; i++){
             dp[i] = dp[i-1];
-            int max = 0;
-            int min = Integer.MAX_VALUE;
+            int max = arr[i];
+            int min = arr[i];
 
-            for(int j = i; j > 0; j--){
+            for(int j = i-1; j > 0; j--){
                 max = Math.max(max, arr[j]);
                 min = Math.min(min, arr[j]);
 
