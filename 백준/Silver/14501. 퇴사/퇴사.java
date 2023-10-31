@@ -3,15 +3,13 @@ import java.util.*;
 
 public class Main {
 
-    public static int n, ans = 0, times[], pays[];
-
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st;
 
-        n = Integer.parseInt(br.readLine());
-        times = new int[n+1];
-        pays = new int[n+1];
+        int n = Integer.parseInt(br.readLine());
+        int[] times = new int[n+1];
+        int[] pays = new int[n+1];
 
         for(int i = 1; i <= n; i++) {
             st = new StringTokenizer(br.readLine());
@@ -19,21 +17,20 @@ public class Main {
             pays[i] = Integer.parseInt(st.nextToken());
         }
 
-        dfs(1, 0);
-        System.out.println(ans);
-    }
+        int[] dp = new int[n+2];
+        for(int day = n; day > 0; day--) {
+            int nextDay = day + times[day];
 
-    public static void dfs(int day, int sum) {
-        if(day > n) {
-            ans = Math.max(ans, sum);
-            return;
+            if(nextDay > n+1) {
+                dp[day] = dp[day+1];
+            }
+            else {
+                dp[day] = Math.max(dp[day+1], dp[nextDay] + pays[day]);
+            }
         }
 
-        if(day + times[day] <= n+1) {
-            dfs(day + times[day], sum + pays[day]);
-        }
-
-        dfs(day+1, sum);
+        System.out.println(dp[1]);
     }
+
 
 }
