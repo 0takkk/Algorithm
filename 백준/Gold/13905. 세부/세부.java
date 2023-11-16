@@ -4,10 +4,11 @@ import java.util.*;
 public class Main {
 
     public static class Node implements Comparable<Node>{
-        int x, cost;
+        int x, y, cost;
 
-        public Node(int x, int cost) {
+        public Node(int x, int y, int cost) {
             this.x = x;
+            this.y = y;
             this.cost = cost;
         }
 
@@ -18,8 +19,7 @@ public class Main {
     }
 
     public static int n;
-    public static ArrayList<Node>[] graph;
-    public static int[] dist;
+    public static int[] parent;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -29,15 +29,16 @@ public class Main {
         n = Integer.parseInt(st.nextToken());
         int m = Integer.parseInt(st.nextToken());
 
-        dist = new int[n+1];
-        graph = new ArrayList[n+1];
+        parent = new int[n+1];
         for(int i = 1; i <= n; i++) {
-            graph[i] = new ArrayList<>();
+            parent[i] = i;
         }
 
         st = new StringTokenizer(br.readLine());
         int s = Integer.parseInt(st.nextToken());
         int e = Integer.parseInt(st.nextToken());
+
+        PriorityQueue<Node> pq = new PriorityQueue<>();
 
         while(m-->0) {
             st = new StringTokenizer(br.readLine());
@@ -45,32 +46,40 @@ public class Main {
             int b = Integer.parseInt(st.nextToken());
             int c = Integer.parseInt(st.nextToken());
 
-            graph[a].add(new Node(b, c));
-            graph[b].add(new Node(a, c));
+            pq.offer(new Node(a, b, c));
         }
 
-        dijkstra(s);
-        System.out.println(dist[e]);
-    }
-
-    public static void dijkstra(int s) {
-        boolean[] visited = new boolean[n+1];
-        PriorityQueue<Node> pq = new PriorityQueue<>();
-        pq.offer(new Node(s, 0));
-        dist[s] = 987654321;
-
+        int ans = 0;
+        
         while(!pq.isEmpty()) {
-            Node now = pq.poll();
-            if(visited[now.x]) continue;
-            visited[now.x] = true;
+            Node node = pq.poll();
+            int x = node.x;
+            int y = node.y;
+            int cost = node.cost;
 
-            for (Node next : graph[now.x]) {
-                if(!visited[next.x]) {
-                    dist[next.x] = Math.max(dist[next.x], Math.min(next.cost, dist[now.x]));
-                    pq.offer(new Node(next.x, dist[next.x]));
-                }
+            if(find(x) != find(y)) {
+                union(x, y);
+            }
+
+            if(find(s) == find(e)) {
+                ans = cost;
+                break;
             }
         }
+
+        System.out.println(ans);
+    }
+
+    public static int find(int x) {
+        if(x == parent[x]) return x;
+        return parent[x] = find(parent[x]);
+    }
+
+    public static void union(int x, int y) {
+        x = find(x);
+        y = find(y);
+
+        parent[y] = x;
     }
 
 }
