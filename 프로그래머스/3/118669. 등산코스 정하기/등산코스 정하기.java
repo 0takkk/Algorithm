@@ -1,44 +1,32 @@
 import java.util.*;
 
 class Solution {
-    public static class Node implements Comparable<Node> {
-        int state, intensity;
+    
+    public static class Node implements Comparable<Node>{
+        int x, cost;
 
-        public Node(int state) {
-            this.state = state;
-        }
-
-        public Node(int state, int intensity) {
-            this.state = state;
-            this.intensity = intensity;
+        public Node(int x, int cost) {
+            this.x = x;
+            this.cost = cost;
         }
 
         @Override
         public int compareTo(Node o) {
-            return this.intensity - o.intensity;
+            return this.cost - o.cost;
         }
     }
 
-    public static class Edge {
-        int x, cost;
-
-        public Edge(int x, int cost) {
-            this.x = x;
-            this.cost = cost;
-        }
-    }
-
-    public static int N;
-    public static ArrayList<Edge>[] graph;
-    public static HashSet<Integer> GATES, SUMMITS;
-    public static int[] answer;
+    public static int len, answer[];
+    public static ArrayList<Node>[] graph;
+    public static HashSet<Integer> gateSet, summitSet;
 
     public static int[] solution(int n, int[][] paths, int[] gates, int[] summits) {
-        answer = new int[]{0, Integer.MAX_VALUE};
+        len = n;
+        graph = new ArrayList[len+1];
+        gateSet = new HashSet<>();
+        summitSet = new HashSet<>();
 
-        N = n;
-        graph = new ArrayList[n+1];
-        for(int i = 1; i <= n; i++) {
+        for(int i = 1; i <= len; i++) {
             graph[i] = new ArrayList<>();
         }
 
@@ -47,21 +35,19 @@ class Solution {
             int b = path[1];
             int c = path[2];
 
-            graph[a].add(new Edge(b, c));
-            graph[b].add(new Edge(a, c));
+            graph[a].add(new Node(b, c));
+            graph[b].add(new Node(a, c));
         }
 
-        GATES = new HashSet<>();
-        SUMMITS = new HashSet<>();
-
         for (int gate : gates) {
-            GATES.add(gate);
+            gateSet.add(gate);
         }
 
         for (int summit : summits) {
-            SUMMITS.add(summit);
+            summitSet.add(summit);
         }
 
+        answer = new int[] {0, Integer.MAX_VALUE};
         for (int gate : gates) {
             bfs(gate);
         }
@@ -69,42 +55,37 @@ class Solution {
         return answer;
     }
 
-    public static void bfs(int startGate) {
+    public static void bfs(int start) {
+        int[] visited = new int[len+1];
         PriorityQueue<Node> pq = new PriorityQueue<>();
-        pq.offer(new Node(startGate));
-        int[] costs = new int[N+1];
-        Arrays.fill(costs, Integer.MAX_VALUE);
-        costs[startGate] = 0;
+        pq.offer(new Node(start, 0));
+        Arrays.fill(visited, Integer.MAX_VALUE);
+        visited[start] = 0;
 
         while(!pq.isEmpty()) {
-            Node node = pq.poll();
-            int now = node.state;
-            int intensity = node.intensity;
+            Node now = pq.poll();
 
-            if(intensity > answer[1]) return;
+            if(now.cost > answer[1]) return;
 
-            if(SUMMITS.contains(now)) {
-                if(answer[1] > intensity) {
-                    answer[0] = now;
-                    answer[1] = intensity;
+            if(summitSet.contains(now.x)) {
+                if(now.cost == answer[1]) {
+                    answer[0] = Math.min(answer[0], now.x);
                 }
-                else if(answer[1] == intensity) {
-                    answer[0] = Math.min(answer[0], now);
+                else if(now.cost < answer[1]) {
+                    answer[0] = now.x;
+                    answer[1] = now.cost;
                 }
                 continue;
             }
 
-            for (Edge edge : graph[now]) {
-                int next = edge.x;
-                int cost = edge.cost;
-
-                if(GATES.contains(next)) continue;
-
-                if(costs[next] > cost) {
-                    costs[next] = cost;
-                    pq.offer(new Node(next, Math.max(intensity, cost)));
+            for (Node next : graph[now.x]) {
+                if(visited[next.x] > next.cost && !gateSet.contains(next.x)) {
+                    visited[next.x] = next.cost;
+                    pq.offer(new Node(next.x, Math.max(now.cost, next.cost)));
                 }
             }
         }
     }
+
+    
 }
