@@ -33,8 +33,8 @@ class Solution {
                 ans = i;
             }
         }
-    
-        return secondToTime(ans);
+
+        return String.format("%02d:%02d:%02d", ans/3600, (ans/60)%60, ans%60);
     }
     
     public int timeToSecond(String time) {
