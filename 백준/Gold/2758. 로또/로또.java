@@ -11,17 +11,13 @@ public class Main {
         StringBuilder sb = new StringBuilder();
 
         long[][] dp = new long[11][2001];
-        for(int i = 1; i <= 2000; i++) {
-            dp[1][i] = 1;
+        for(int i = 0; i <= 2000; i++) {
+            dp[0][i] = 1;
         }
 
-        for(int i = 2; i <= 10; i++) {
+        for(int i = 1; i <= 10; i++) {
             for(int j = 1; j <= 2000; j++) {
-                if(dp[i-1][j] != 0) {
-                    for(int k = j*2; k <= 2000; k++) {
-                        dp[i][k] += dp[i-1][j];
-                    }
-                }
+                dp[i][j] = dp[i-1][j/2] + dp[i][j-1];
             }
         }
 
@@ -30,12 +26,7 @@ public class Main {
             int n = Integer.parseInt(st.nextToken());
             int m = Integer.parseInt(st.nextToken());
 
-            long ans = 0;
-            for(int i = 1; i <= m; i++) {
-                ans += dp[n][i];
-            }
-
-            sb.append(ans).append("\n");
+            sb.append(dp[n][m]).append("\n");
         }
 
         System.out.println(sb.toString());
