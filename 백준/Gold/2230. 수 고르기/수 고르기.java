@@ -18,38 +18,27 @@ public class Main {
 
         Arrays.sort(arr);
 
+        int left = 0;
+        int right = 1;
         int ans = Integer.MAX_VALUE;
 
-        for(int i = 0; i < n-1; i++) {
-            int binary = binary(arr, i, m);
-            if(binary != Integer.MIN_VALUE) {
-                ans = Math.min(ans, binary - arr[i]);
+        while(left < right && right < n) {
+            int diff = arr[right] - arr[left];
+
+            if(diff >= m) {
+                ans = Math.min(ans, diff);
+                left++;
+            }
+            else {
+                right++;
+            }
+
+            if(left == right) {
+                right++;
             }
         }
 
         System.out.println(ans);
-    }
-
-    public static int binary(int[] arr, int idx, int m) {
-        int target = arr[idx] + m;
-
-        int left = idx+1;
-        int right = arr.length-1;
-        int ans = Integer.MIN_VALUE;
-
-        while(left <= right) {
-            int mid = (left + right) / 2;
-
-            if(arr[mid] < target) {
-                left = mid+1;
-            }
-            else {
-                right = mid-1;
-                ans = arr[mid];
-            }
-        }
-
-        return ans;
     }
 
 }
