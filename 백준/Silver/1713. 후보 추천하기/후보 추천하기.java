@@ -4,12 +4,16 @@ import java.util.*;
 public class Main {
 
     public static class Candidate implements Comparable<Candidate>{
-        int num, count, idx;
+        int num;
+        int count;
+        int idx;
+        boolean isTopRank;
 
-        public Candidate(int num, int count, int idx) {
+        public Candidate(int num, int count, int idx, boolean isTopRank) {
             this.num = num;
             this.count = count;
             this.idx = idx;
+            this.isTopRank = isTopRank;
         }
 
         @Override
@@ -19,15 +23,6 @@ public class Main {
             }
             return this.count - o.count;
         }
-
-        @Override
-        public String toString() {
-            return "Candidate{" +
-                    "num=" + num +
-                    ", count=" + count +
-                    ", idx=" + idx +
-                    '}';
-        }
     }
 
     public static void main(String[] args) throws IOException {
@@ -35,68 +30,43 @@ public class Main {
         StringTokenizer st;
 
         int n = Integer.parseInt(br.readLine());
-        int k = Integer.parseInt(br.readLine());
+        int m = Integer.parseInt(br.readLine());
         st = new StringTokenizer(br.readLine());
 
-        int[] counts = new int[101];
-        LinkedList<Candidate> rank = new LinkedList<>();
+        Candidate[] candidates = new Candidate[101];
+        List<Candidate> ranks = new ArrayList<>();
 
-        while(k-->0) {
+        for(int i = 1; i <= 100; i++) {
+            candidates[i] = new Candidate(i, 0, 0, false);
+        }
+
+        while(m-->0) {
             int num = Integer.parseInt(st.nextToken());
 
-            counts[num]++;
-            if(rank.size() < n) {
-                boolean flag = false;
-                int idx = 0;
-                for(int i = 0; i < rank.size(); i++) {
-                    if(rank.get(i).num == num) {
-                        flag = true;
-                        idx = i;
-                    }
-                }
-
-                if(flag) {
-                    rank.get(idx).count++;
-                }
-                else {
-                    rank.add(new Candidate(num, counts[num], k));
-                }
+            if(candidates[num].isTopRank) {
+                candidates[num].count++;
             }
             else {
-                boolean flag = false;
-                int idx = 0;
-                for(int i = 0; i < rank.size(); i++) {
-                    if(rank.get(i).num == num) {
-                        flag = true;
-                        idx = i;
-                    }
+                if(ranks.size() == n) {
+                    Collections.sort(ranks);
+                    Candidate removed = ranks.remove(0);
+                    candidates[removed.num].count = 0;
+                    candidates[removed.num].isTopRank = false;
                 }
-
-                if(flag) {
-                    rank.get(idx).count++;
-                }
-                else {
-
-                        Candidate removed = rank.remove(0);
-                        counts[removed.num] = 0;
-                        rank.add(new Candidate(num, counts[num], k));
-                    
-                }
+                ranks.add(candidates[num]);
+                candidates[num].count++;
+                candidates[num].idx = m;
+                candidates[num].isTopRank = true;
             }
-
-            Collections.sort(rank);
         }
 
-        ArrayList<Integer> result = new ArrayList<>();
-        for (Candidate candidate : rank) {
-            result.add(candidate.num);
-        }
-
-        Collections.sort(result);
         StringBuilder sb = new StringBuilder();
-        for (Integer i : result) {
-            sb.append(i).append(" ");
+        for(int i = 1; i <= 100; i++) {
+            if(candidates[i].isTopRank) {
+                sb.append(i).append(" ");
+            }
         }
+
         System.out.println(sb.toString());
     }
 
