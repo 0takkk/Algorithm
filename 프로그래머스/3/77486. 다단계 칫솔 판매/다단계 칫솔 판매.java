@@ -37,6 +37,10 @@ class Solution {
         }
 
         public void calculateCost(int cost) {
+            if(cost == 0) {
+                return;
+            }
+            
             if(boss == null) {
                 this.cost += cost;
                 return;
