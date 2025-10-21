@@ -2,17 +2,19 @@ class Solution {
     public int solution(int[] players, int m, int k) {
         int answer = 0;
         
-        int[] servers = new int[24+k];
+        int[] dp = new int[24+k];
         
-        for(int i = 0; i < players.length; i++) {
-            int player = players[i];
-            int server = servers[i];
+        for(int i = 0; i < 24; i++) {
+            int player = players[i]-m;
             
-            int needServer = player/m;
-            if(server < needServer) {
-                answer += (needServer - server);
+            if(player >= dp[i]) {
+                int diff = player - dp[i];
+                int count = diff / m + 1;
+                
+                answer += count;
+                
                 for(int j = i; j < i+k; j++) {
-                    servers[j] += (needServer - server);
+                    dp[j] += (m * count);
                 }
             }
         }
