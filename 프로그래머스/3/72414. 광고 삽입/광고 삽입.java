@@ -2,47 +2,56 @@ class Solution {
     public String solution(String play_time, String adv_time, String[] logs) {
         String answer = "";
         
-        int playTime = timeToSecond(play_time);
-        int advTime = timeToSecond(adv_time);
-        long[] watch = new long[playTime+1];
+        int time = calcTime(play_time);
+        long[] players = new long[time+1];
         
         for(String log : logs) {
-            String[] times = log.split("-");
-            int startTime = timeToSecond(times[0]);
-            int endTime = timeToSecond(times[1]);
-            watch[startTime]++;
-            watch[endTime]--;
-        }
-        
-        for(int i = 0; i < playTime; i++) {
-            watch[i+1] += watch[i];
-        }
-        
-        int startTime = 0;
-        int ans = 0;
-        long watchTime = 0;
-        long maxWatchTime = 0;
-        
-        while(startTime + advTime <= playTime) {
-            if(maxWatchTime < watchTime) {
-                maxWatchTime = watchTime;
-                ans = startTime;
-            }
+            String[] l = log.split("-");
+            int startTime = calcTime(l[0]);
+            int endTime = calcTime(l[1]);
             
-            watchTime -= watch[startTime];
-            watchTime += watch[startTime+advTime];
-            startTime++;
+            players[startTime]++;
+            players[endTime]--;
         }
-
-        return String.format("%02d:%02d:%02d", ans/3600, (ans/60)%60, ans%60);
+        
+        for(int i = 1; i < time; i++) {
+            players[i] += players[i-1];
+        }
+         
+        for(int i = 1; i < time; i++) {
+            players[i] += players[i-1];
+        }
+        
+        int advTime = calcTime(adv_time);
+        
+        long max = players[advTime];
+        int startTime = 0;
+        
+        for(int i = 1; i <= time-advTime; i++) {
+            long now = players[advTime+i-1] - players[i-1];
+            if(now > max) {
+                max = now;
+                startTime = i;
+            }
+        }
+        
+        return toTime(startTime);
     }
     
-    public int timeToSecond(String time) {
+    public int calcTime(String time) {
         String[] times = time.split(":");
-        int h = Integer.parseInt(times[0]) * 3600;
-        int m = Integer.parseInt(times[1]) * 60;
-        int s = Integer.parseInt(times[2]);
-        return h+m+s;
+        return 3600 * Integer.parseInt(times[0]) + 60 * Integer.parseInt(times[1]) + Integer.parseInt(times[2]);
     }
     
+    public String toTime(int time) {
+        int h = time / 3600;
+        time = time % 3600;
+        
+        int m = time / 60;
+        time = time % 60;
+        
+        int s = time;
+        
+        return String.format("%02d", h) + ":" + String.format("%02d", m) + ":" + String.format("%02d", s);
+    }
 }
